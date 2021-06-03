@@ -1,0 +1,17 @@
+levels:
+  tooling:
+    discovery:
+      dockerfile:
+        flags: ""
+    tool:
+      dockerfilelint:
+        flags: ""
+
+  tooling_with_pylint:
+    inherits_from: "tooling"
+    discovery:
+      python:
+        flags: ""
+    tool:
+      pylint:
+        flags: "--good-names=f,i,j,k,x,y,z,ex,_"
