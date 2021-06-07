@@ -13,12 +13,18 @@
 This is a set of plugins for [Statick](https://github.com/sscpac/statick) that will discover tooling related
 files and perform static analysis on those files.
 
-The current plugins will discover dockerfile files in a project and can be configured to check those files using
+Custom exceptions can be applied the same way they are with [Statick exceptions][Exceptions].
 
-- [dockerfilelint](https://github.com/replicatedhq/dockerfilelint)
+## Table of Contents
 
-Custom exceptions can be applied the same way they are with
-[Statick exceptions](https://github.com/sscpac/statick/blob/master/GUIDE.md#exceptionsyaml).
+* [Installation](#installation)
+* [Usage](#usage)
+* [Existing Plugins](#existing-plugins)
+  * [Discovery Plugins](#discovery-plugins)
+  * [Tool Plugins](#tool-plugins)
+* [Contributing](#contributing)
+  * [Mypy](#mypy)
+  * [Formatting](#formatting)
 
 ## Installation
 
@@ -44,9 +50,11 @@ cat npm-deps.txt | xargs sudo npm install -g
 The most common usage is to use statick and statick-tooling from pip.
 In that case your directory structure will look like the following:
 
-- doc
-  - tooling-project
-  - statick-output
+```shell
+project-root
+ |- tooling-project
+ |- statick-config
+```
 
 To run with the default configuration for the statick-tooling tools use:
 
@@ -61,12 +69,14 @@ This is usually done to run a different set of tools than are called out in the 
 For this case you will have to add the new Statick configuration somewhere.
 This example will have custom exceptions in the tooling-project, such that the directory structure is:
 
-- doc
-  - tooling-project
-    - statick-config
-      - rsc
-        - exceptions.yaml
-  - statick-output
+```shell
+project-root
+ |- tooling-project
+ |- statick-config
+     |- rsc
+         |- exceptions.yaml
+ |- statick-output
+```
 
 For this setup you will run the following:
 
@@ -79,14 +89,16 @@ statick tooling-project/ --output-directory statick-output/ --user-paths tooling
 The last type of setup will be to have all of the tools available from cloning repositories, not installing from pip.
 The directory structure will look like:
 
-- doc
-  - tooling-project
-    - statick-config
-      - rsc
-        - exceptions.yaml
-  - statick-output
-  - statick
-  - statick-tooling
+```shell
+project-root
+ |- tooling-project
+ |- statick-config
+     |- rsc
+         |- exceptions.yaml
+ |- statick-output
+ |- statick
+ |- statick-tooling
+```
 
 Using the example where we want to override the default exceptions with
 custom ones in the tooling-project, the command to run would be:
@@ -95,7 +107,26 @@ custom ones in the tooling-project, the command to run would be:
 ./statick/statick tooling-project/ --output-directory statick-output/ --user-paths statick-tooling/,tooling-project/statick-config/ --profile tooling-profile.yaml
 ```
 
-## Tests and Contributing
+## Existing Plugins
+
+### Discovery Plugins
+
+Note that if a file exists without the extension listed it can still be discovered if the `file` command identifies it
+as a specific file type.
+This type of discovery must be supported by the discovery plugin and only works on operating systems where the `file`
+command exists.
+
+File Type | Extensions
+:-------- | :---------
+dockerfile | `Dockerfile*`
+
+### Tool Plugins
+
+Tool | About
+:--- | :----
+[dockerfilelint][dockerfilelint] | A rule based 'linter' for Dockerfiles.
+
+## Contributing
 
 If you write a new feature for Statick or are fixing a bug,
 you are strongly encouraged to add unit tests for your contribution.
@@ -107,8 +138,8 @@ introduced any regressions or violated any code style guidelines.
 
 ### Mypy
 
-Statick Tooling uses [mypy](http://mypy-lang.org/) to check that type hints are being followed properly.
-Type hints are described in [PEP 484](https://www.python.org/dev/peps/pep-0484/) and allow for static typing in Python.
+Statick Tooling uses [mypy][MyPy] to check that type hints are being followed properly.
+Type hints are described in [PEP 484][Pep484] and allow for static typing in Python.
 To determine if proper types are being used in Statick Tooling the following command will show any errors, and create several
 types of reports that can be viewed with a text editor or web browser.
 
@@ -122,10 +153,16 @@ It is hoped that in the future we will generate coverage reports from mypy and u
 
 ### Formatting
 
-Statick code is formatted using [black](https://github.com/psf/black).
+Statick code is formatted using [black][Black].
 To fix locally use
 
 ```shell
 python3 -m pip install black
 black src tests
 ```
+
+[Black]: https://github.com/psf/black
+[Exceptions]: https://github.com/sscpac/statick/blob/master/GUIDE.md#exceptionsyaml
+[MyPy]: http://mypy-lang.org/
+[Pep484]: https://www.python.org/dev/peps/pep-0484/
+[dockerfilelint]: https://github.com/replicatedhq/dockerfilelint
