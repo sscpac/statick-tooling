@@ -68,6 +68,7 @@ jobs:
           sudo apt install nodejs
           sudo npm install -g n
           sudo n stable
+          sudo npm install -g markdownlint-cli
           sudo npm install -g dockerfilelint
           sudo npm install -g dockerfile_lint
           rm nodesource_setup.sh
