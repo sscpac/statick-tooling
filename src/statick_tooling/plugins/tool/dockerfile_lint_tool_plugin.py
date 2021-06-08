@@ -46,7 +46,6 @@ class DockerfileULintToolPlugin(ToolPlugin):  # type: ignore
         for src in files:
             try:
                 exe = [tool_bin] + flags + ["-f", src]
-                logging.info(" ".join(exe))
                 output = subprocess.check_output(
                     exe, stderr=subprocess.STDOUT, universal_newlines=True
                 )
@@ -85,7 +84,6 @@ class DockerfileULintToolPlugin(ToolPlugin):  # type: ignore
 
         This is because dockerfile-lint does not include the filename in the output.
         """
-        logging.info("'%s'", output)
         try:
             json_dict = json.loads(output)
             json_dict["filename"] = src
