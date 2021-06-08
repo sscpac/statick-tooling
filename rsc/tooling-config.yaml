@@ -1,10 +1,28 @@
 levels:
+  dockerfilelint:
+    discovery:
+      dockerfile:
+        flags: ""
+    tool:
+      dockerfilelint:
+        flags: ""
+
+  dockerfile-lint:
+    discovery:
+      dockerfile:
+        flags: ""
+    tool:
+      dockerfile-lint:
+        flags: ""
+
   tooling:
     discovery:
       dockerfile:
         flags: ""
     tool:
       dockerfilelint:
+        flags: ""
+      dockerfile-lint:
         flags: ""
 
   tooling_with_pylint:
