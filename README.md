@@ -125,6 +125,7 @@ dockerfile | `Dockerfile*`
 Tool | About
 :--- | :----
 [dockerfilelint][dockerfilelint] | A rule based 'linter' for Dockerfiles.
+[dockerfile-lint][dockerfile-lint] | A rule based 'linter' for Dockerfiles.
 
 ## Contributing
 
@@ -166,3 +167,4 @@ black src tests
 [MyPy]: http://mypy-lang.org/
 [Pep484]: https://www.python.org/dev/peps/pep-0484/
 [dockerfilelint]: https://github.com/replicatedhq/dockerfilelint
+[dockerfile-lint]: https://github.com/projectatomic/dockerfile_lint
