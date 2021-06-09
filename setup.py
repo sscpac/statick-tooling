@@ -19,7 +19,7 @@ setup(
     author="NIWC Pacific",
     name="statick-tooling",
     description="Statick analysis plugins for Tooling files.",
-    version="0.0.0",
+    version="0.0.1",
     packages=[
         "statick_tool",
         "statick_tool.plugins.discovery",

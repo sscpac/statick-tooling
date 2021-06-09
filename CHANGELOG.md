@@ -12,10 +12,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ### Removed
 
-## v0.0.1 - 2021-06-07
+## v0.0.1 - 2021-06-09
 
 ### Added
 
 - Initial release (Alexander Xydes, @axydes)
 - Dockerfile discovery plugin.
 - [dockerfilelint](https://github.com/replicatedhq/dockerfilelint) tool plugin.
+- [dockerfile-lint](https://github.com/projectatomic/dockerfile_lint) tool plugin. (#1)
