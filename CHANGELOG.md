@@ -12,6 +12,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ### Removed
 
+## v0.0.2 - 2021-08-05
+
+### Fixed
+
+- Correcting usage of dockerfilelint config file
+  (the tool expects a directory path, not the full file path). (#3)
+
 ## v0.0.1 - 2021-06-09
 
 ### Added
