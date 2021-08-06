@@ -80,6 +80,7 @@ jobs:
           sudo apt install curl
           curl -sL -o hadolint https://github.com/hadolint/hadolint/releases/download/v2.6.0/hadolint-$(uname -s)-$(uname -m)
           chmod 700 hadolint
+          docker pull hadolint/hadolint:latest
 
       - name: Mypy
         run: |
