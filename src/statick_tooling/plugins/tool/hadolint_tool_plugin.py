@@ -1,8 +1,8 @@
 """Apply hadolint tool and gather results."""
 
+import argparse
 import json
 import logging
-import pathlib
 import subprocess
 from typing import List, Optional
 
@@ -18,12 +18,28 @@ class HadolintToolPlugin(ToolPlugin):  # type: ignore
         """Get name of tool."""
         return "hadolint"
 
+    def gather_args(self, args: argparse.Namespace) -> None:
+        """Gather arguments."""
+        args.add_argument(
+            "--hadolint-bin",
+            dest="hadolint_bin",
+            type=str,
+            help="hadolint binary path",
+        )
+
     # pylint: disable=too-many-locals
     def scan(self, package: Package, level: str) -> Optional[List[Issue]]:
         """Run tool and gather output."""
         tool_bin = "hadolint"
 
-        tool_config = ".hadolintrc"
+        # If the user explicitly specifies a binary, let that override the user_version
+        if (
+            self.plugin_context
+            and self.plugin_context.args.hadolint_bin is not None
+        ):
+            tool_bin = self.plugin_context.args.hadolint_bin
+
+        tool_config = ".hadolint.yaml"
         user_config = self.plugin_context.config.get_tool_config(
             self.get_name(), level, "config"
         )
@@ -34,7 +50,7 @@ class HadolintToolPlugin(ToolPlugin):  # type: ignore
         flags: List[str] = []
         if format_file_name is not None:
             flags += ["-c", format_file_name]
-        flags += ["-f", "json"]
+        flags += ["-f", "json", "--no-fail"]
         user_flags = self.get_user_flags(level)
         flags += user_flags
 
@@ -53,15 +69,11 @@ class HadolintToolPlugin(ToolPlugin):  # type: ignore
             total_output.append(output)
 
         except subprocess.CalledProcessError as ex:
-            # hadolint returns the number of linting errors as the return code
-            if ex.returncode > 0:
-                total_output.append(ex.output)
-            else:
-                logging.warning(
-                    "%s failed! Returncode = %d", tool_bin, ex.returncode
-                )
-                logging.warning("%s exception: %s", self.get_name(), ex.output)
-                return None
+            logging.warning(
+                "%s failed! Returncode = %d", tool_bin, ex.returncode
+            )
+            logging.warning("%s exception: %s", self.get_name(), ex.output)
+            return None
 
         except OSError as ex:
             logging.warning("Couldn't find %s! (%s)", tool_bin, ex)
@@ -92,14 +104,18 @@ class HadolintToolPlugin(ToolPlugin):  # type: ignore
                         for issue in err_arr:
                             severity_str = issue["level"]
                             severity = "1"
-                            if severity_str == "warning":
+                            if severity_str == "style":
+                                severity = "1"
+                            elif severity_str == "info":
+                                severity = "1"
+                            elif severity_str == "warning":
                                 severity = "3"
                             elif severity_str == "error":
                                 severity = "5"
                             issues.append(
                                 Issue(
                                     issue["file"],
-                                    issue["line"],
+                                    str(issue["line"]),
                                     self.get_name(),
                                     issue["code"],
                                     severity,
