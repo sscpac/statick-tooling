@@ -161,9 +161,7 @@ def test_hadolint_tool_plugin_scan_different_binary():
     assert issues is None
 
 
-@mock.patch(
-    "statick_tool.plugins.tool.hadolint_tool_plugin.subprocess.check_output"
-)
+@mock.patch("statick_tool.plugins.tool.hadolint_tool_plugin.subprocess.check_output")
 def test_hadolint_tool_plugin_scan_calledprocesserror(
     mock_subprocess_check_output,
 ):
@@ -192,9 +190,7 @@ def test_hadolint_tool_plugin_scan_calledprocesserror(
     assert not issues
 
 
-@mock.patch(
-    "statick_tool.plugins.tool.hadolint_tool_plugin.subprocess.check_output"
-)
+@mock.patch("statick_tool.plugins.tool.hadolint_tool_plugin.subprocess.check_output")
 def test_hadolint_tool_plugin_scan_oserror(mock_subprocess_check_output):
     """
     Test what happens when an OSError is raised (usually means hadolint doesn't exist).
@@ -213,9 +209,7 @@ def test_hadolint_tool_plugin_scan_oserror(mock_subprocess_check_output):
     assert issues is None
 
 
-@mock.patch(
-    "statick_tool.plugins.tool.hadolint_tool_plugin.subprocess.check_output"
-)
+@mock.patch("statick_tool.plugins.tool.hadolint_tool_plugin.subprocess.check_output")
 def test_hadolint_tool_plugin_scan_calledprocesserror_with_docker(
     mock_subprocess_check_output,
 ):
@@ -245,9 +239,7 @@ def test_hadolint_tool_plugin_scan_calledprocesserror_with_docker(
     assert not issues
 
 
-@mock.patch(
-    "statick_tool.plugins.tool.hadolint_tool_plugin.subprocess.check_output"
-)
+@mock.patch("statick_tool.plugins.tool.hadolint_tool_plugin.subprocess.check_output")
 def test_hadolint_tool_plugin_scan_oserror_with_docker(mock_subprocess_check_output):
     """
     Test what happens when an OSError is raised by scan_docker.

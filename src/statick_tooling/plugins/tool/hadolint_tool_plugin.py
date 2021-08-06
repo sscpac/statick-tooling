@@ -39,10 +39,7 @@ class HadolintToolPlugin(ToolPlugin):  # type: ignore
         tool_bin = "hadolint"
 
         # If the user explicitly specifies a binary, let that override the user_version
-        if (
-            self.plugin_context
-            and self.plugin_context.args.hadolint_bin is not None
-        ):
+        if self.plugin_context and self.plugin_context.args.hadolint_bin is not None:
             tool_bin = self.plugin_context.args.hadolint_bin
 
         tool_config = ".hadolint.yaml"
@@ -91,7 +88,9 @@ class HadolintToolPlugin(ToolPlugin):  # type: ignore
 
     # pylint: enable=too-many-locals
 
-    def scan_local_binary(self, tool_bin, flags, files) -> Optional[str]:
+    def scan_local_binary(
+        self, tool_bin: str, flags: List[str], files: List[str]
+    ) -> Optional[str]:
         """Use locally installed hadolint binary to scan."""
         try:
             exe = [tool_bin] + flags
@@ -102,9 +101,7 @@ class HadolintToolPlugin(ToolPlugin):  # type: ignore
             return output
 
         except subprocess.CalledProcessError as ex:
-            logging.warning(
-                "%s failed! Returncode = %d", tool_bin, ex.returncode
-            )
+            logging.warning("%s failed! Returncode = %d", tool_bin, ex.returncode)
             logging.warning("%s exception: %s", self.get_name(), ex.output)
             return None
 
@@ -112,12 +109,30 @@ class HadolintToolPlugin(ToolPlugin):  # type: ignore
             logging.warning("Couldn't find %s! (%s)", tool_bin, ex)
             return None
 
-    def scan_docker(self, tool_bin, flags, files, config_file_path) -> Optional[str]:
+    def scan_docker(
+        self, tool_bin: str, flags: List[str], files: List[str], config_file_path: str
+    ) -> Optional[str]:
         """Use hadolint docker image to scan."""
         try:
             json_dict = []
             for src in files:
-                exe = ['docker', 'run', '--rm', '-i', '-v', config_file_path + ':/.config/hadolint.yaml', '-v', src + ':/Dockerfile', 'hadolint/hadolint', 'hadolint', '-f', 'json', '--no-fail', 'Dockerfile']
+                exe = [
+                    "docker",
+                    "run",
+                    "--rm",
+                    "-i",
+                    "-v",
+                    config_file_path + ":/.config/hadolint.yaml",
+                    "-v",
+                    src + ":/Dockerfile",
+                    "hadolint/hadolint",
+                    "hadolint",
+                    "-f",
+                    "json",
+                    "--no-fail",
+                ]
+                exe.extend(flags)
+                exe.append("Dockerfile")
                 output = subprocess.check_output(
                     exe, stderr=subprocess.STDOUT, universal_newlines=True
                 )
@@ -128,9 +143,7 @@ class HadolintToolPlugin(ToolPlugin):  # type: ignore
             return json.dumps(json_dict)
 
         except subprocess.CalledProcessError as ex:
-            logging.warning(
-                "%s failed! Returncode = %d", tool_bin, ex.returncode
-            )
+            logging.warning("%s failed! Returncode = %d", tool_bin, ex.returncode)
             logging.warning("%s exception: %s", self.get_name(), ex.output)
             return None
 
