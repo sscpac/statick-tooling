@@ -17,10 +17,22 @@ from statick_tool.resources import Resources
 from statick_tool.tool_plugin import ToolPlugin
 
 
-def setup_hadolint_tool_plugin(binary=None):
+def setup_hadolint_tool_plugin(binary=None, use_docker=False):
     """Initialize and return an instance of the hadolint plugin."""
     arg_parser = argparse.ArgumentParser()
     arg_parser.add_argument("--hadolint-bin", dest="hadolint_bin")
+    if use_docker:
+        arg_parser.add_argument(
+            "--hadolint-docker",
+            dest="hadolint_docker",
+            action="store_false",
+        )
+    else:
+        arg_parser.add_argument(
+            "--hadolint-docker",
+            dest="hadolint_docker",
+            action="store_true",
+        )
 
     resources = Resources(
         [
@@ -92,6 +104,26 @@ def test_hadolint_tool_plugin_scan_valid_with_issues():
     issues = plugin.scan(package, "level")
     # We expect a 2 issues: DL3020 use COPY instead of ADD, DL3007 using latest is prone to errors
     assert len(issues) == 2
+
+
+def test_hadolint_tool_plugin_scan_valid_with_issues_with_docker():
+    """Integration test: Make sure the hadolint output hasn't changed."""
+    plugin = setup_hadolint_tool_plugin(use_docker=True)
+    if not plugin.command_exists("docker"):
+        pytest.skip("Missing docker executable.")
+    package = Package(
+        "valid_package", os.path.join(os.path.dirname(__file__), "valid_package")
+    )
+    package["dockerfile_src"] = [
+        os.path.join(os.path.dirname(__file__), "valid_package", "Dockerfile")
+    ]
+    issues = plugin.scan(package, "level")
+    # We expect 4 issues:
+    # DL3048 style: Invalid label key.
+    # DL3059 info: Multiple consecutive `RUN` instructions. Consider consolidation.
+    # DL3007 warning: Using latest is prone to errors...
+    # DL3020 error: Use COPY instead of ADD for files and folders
+    assert len(issues) == 4
 
 
 def test_hadolint_tool_plugin_parse_valid():
@@ -171,6 +203,60 @@ def test_hadolint_tool_plugin_scan_oserror(mock_subprocess_check_output):
     """
     mock_subprocess_check_output.side_effect = OSError("mocked error")
     plugin = setup_hadolint_tool_plugin()
+    package = Package(
+        "valid_package", os.path.join(os.path.dirname(__file__), "valid_package")
+    )
+    package["dockerfile_src"] = [
+        os.path.join(os.path.dirname(__file__), "valid_package", "Dockerfile")
+    ]
+    issues = plugin.scan(package, "level")
+    assert issues is None
+
+
+@mock.patch(
+    "statick_tool.plugins.tool.hadolint_tool_plugin.subprocess.check_output"
+)
+def test_hadolint_tool_plugin_scan_calledprocesserror_with_docker(
+    mock_subprocess_check_output,
+):
+    """
+    Test what happens when a CalledProcessError is raised by scan_docker.
+    This usually means hadolint hit an error.
+
+    Expected result: issues is None
+    """
+    mock_subprocess_check_output.side_effect = subprocess.CalledProcessError(
+        0, "", output="mocked error"
+    )
+    plugin = setup_hadolint_tool_plugin(use_docker=True)
+    package = Package(
+        "valid_package", os.path.join(os.path.dirname(__file__), "valid_package")
+    )
+    package["dockerfile_src"] = [
+        os.path.join(os.path.dirname(__file__), "valid_package", "Dockerfile")
+    ]
+    issues = plugin.scan(package, "level")
+    assert issues is None
+
+    mock_subprocess_check_output.side_effect = subprocess.CalledProcessError(
+        2, "", output="mocked error"
+    )
+    issues = plugin.scan(package, "level")
+    assert not issues
+
+
+@mock.patch(
+    "statick_tool.plugins.tool.hadolint_tool_plugin.subprocess.check_output"
+)
+def test_hadolint_tool_plugin_scan_oserror_with_docker(mock_subprocess_check_output):
+    """
+    Test what happens when an OSError is raised by scan_docker.
+    This usually means hadolint doesn't exist.
+
+    Expected result: issues is None
+    """
+    mock_subprocess_check_output.side_effect = OSError("mocked error")
+    plugin = setup_hadolint_tool_plugin(use_docker=True)
     package = Package(
         "valid_package", os.path.join(os.path.dirname(__file__), "valid_package")
     )

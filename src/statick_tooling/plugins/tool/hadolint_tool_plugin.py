@@ -121,7 +121,7 @@ class HadolintToolPlugin(ToolPlugin):  # type: ignore
                 output = subprocess.check_output(
                     exe, stderr=subprocess.STDOUT, universal_newlines=True
                 )
-                output = output.replace('"file":"Dockerfile"', '"file":"'+src+'"')
+                output = output.replace('"file":"Dockerfile"', '"file":"' + src + '"')
                 file_dict = json.loads(output)
                 for issue in file_dict:
                     json_dict.append(issue)
