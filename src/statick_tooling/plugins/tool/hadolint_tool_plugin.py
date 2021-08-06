@@ -130,7 +130,6 @@ class HadolintToolPlugin(ToolPlugin):  # type: ignore
                 ]
                 exe.extend(flags)
                 exe.append("Dockerfile")
-                logging.warning(' '.join(exe))
                 output = subprocess.check_output(
                     exe, stderr=subprocess.STDOUT, universal_newlines=True
                 )
