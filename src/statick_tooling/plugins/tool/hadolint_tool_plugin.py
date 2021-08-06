@@ -26,6 +26,12 @@ class HadolintToolPlugin(ToolPlugin):  # type: ignore
             type=str,
             help="hadolint binary path",
         )
+        args.add_argument(
+            "--hadolint-docker",
+            dest="hadolint_docker",
+            action="store_true",
+            help="Use hadolint docker image instead of binary",
+        )
 
     # pylint: disable=too-many-locals
     def scan(self, package: Package, level: str) -> Optional[List[Issue]]:
@@ -46,10 +52,10 @@ class HadolintToolPlugin(ToolPlugin):  # type: ignore
         if user_config is not None:
             tool_config = user_config
 
-        format_file_name = self.plugin_context.resources.get_file(tool_config)
+        config_file_path = self.plugin_context.resources.get_file(tool_config)
         flags: List[str] = []
-        if format_file_name is not None:
-            flags += ["-c", format_file_name]
+        if config_file_path is not None:
+            flags += ["-c", config_file_path]
         flags += ["-f", "json", "--no-fail"]
         user_flags = self.get_user_flags(level)
         flags += user_flags
@@ -59,24 +65,18 @@ class HadolintToolPlugin(ToolPlugin):  # type: ignore
             files += package["dockerfile_src"]
 
         total_output: List[str] = []
+        if (
+            self.plugin_context
+            and self.plugin_context.args.hadolint_docker is not None
+            and self.plugin_context.args.hadolint_docker
+        ):
+            output = self.scan_docker(tool_bin, flags, files, config_file_path)
+        else:
+            output = self.scan_local_binary(tool_bin, flags, files)
 
-        try:
-            exe = [tool_bin] + flags
-            exe.extend(files)
-            output = subprocess.check_output(
-                exe, stderr=subprocess.STDOUT, universal_newlines=True
-            )
+        if output:
             total_output.append(output)
-
-        except subprocess.CalledProcessError as ex:
-            logging.warning(
-                "%s failed! Returncode = %d", tool_bin, ex.returncode
-            )
-            logging.warning("%s exception: %s", self.get_name(), ex.output)
-            return None
-
-        except OSError as ex:
-            logging.warning("Couldn't find %s! (%s)", tool_bin, ex)
+        else:
             return None
 
         for output in total_output:
@@ -90,6 +90,53 @@ class HadolintToolPlugin(ToolPlugin):  # type: ignore
         return issues
 
     # pylint: enable=too-many-locals
+
+    def scan_local_binary(self, tool_bin, flags, files) -> Optional[str]:
+        """Use locally installed hadolint binary to scan."""
+        try:
+            exe = [tool_bin] + flags
+            exe.extend(files)
+            output = subprocess.check_output(
+                exe, stderr=subprocess.STDOUT, universal_newlines=True
+            )
+            return output
+
+        except subprocess.CalledProcessError as ex:
+            logging.warning(
+                "%s failed! Returncode = %d", tool_bin, ex.returncode
+            )
+            logging.warning("%s exception: %s", self.get_name(), ex.output)
+            return None
+
+        except OSError as ex:
+            logging.warning("Couldn't find %s! (%s)", tool_bin, ex)
+            return None
+
+    def scan_docker(self, tool_bin, flags, files, config_file_path) -> Optional[str]:
+        """Use hadolint docker image to scan."""
+        try:
+            json_dict = []
+            for src in files:
+                exe = ['docker', 'run', '--rm', '-i', '-v', config_file_path + ':/.config/hadolint.yaml', '-v', src + ':/Dockerfile', 'hadolint/hadolint', 'hadolint', '-f', 'json', '--no-fail', 'Dockerfile']
+                output = subprocess.check_output(
+                    exe, stderr=subprocess.STDOUT, universal_newlines=True
+                )
+                output = output.replace('"file":"Dockerfile"', '"file":"'+src+'"')
+                file_dict = json.loads(output)
+                for issue in file_dict:
+                    json_dict.append(issue)
+            return json.dumps(json_dict)
+
+        except subprocess.CalledProcessError as ex:
+            logging.warning(
+                "%s failed! Returncode = %d", tool_bin, ex.returncode
+            )
+            logging.warning("%s exception: %s", self.get_name(), ex.output)
+            return None
+
+        except OSError as ex:
+            logging.warning("Couldn't find %s! (%s)", tool_bin, ex)
+            return None
 
     def parse_output(self, total_output: List[str]) -> List[Issue]:
         """Parse tool output and report issues."""
