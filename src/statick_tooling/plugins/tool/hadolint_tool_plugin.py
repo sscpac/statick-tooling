@@ -51,8 +51,6 @@ class HadolintToolPlugin(ToolPlugin):  # type: ignore
 
         config_file_path = self.plugin_context.resources.get_file(tool_config)
         flags: List[str] = []
-        if config_file_path is not None:
-            flags += ["-c", config_file_path]
         flags += ["-f", "json", "--no-fail"]
         user_flags = self.get_user_flags(level)
         flags += user_flags
@@ -69,6 +67,8 @@ class HadolintToolPlugin(ToolPlugin):  # type: ignore
         ):
             output = self.scan_docker(tool_bin, flags, files, config_file_path)
         else:
+            if config_file_path is not None:
+                flags += ["-c", config_file_path]
             output = self.scan_local_binary(tool_bin, flags, files)
 
         if output:
@@ -127,12 +127,10 @@ class HadolintToolPlugin(ToolPlugin):  # type: ignore
                     src + ":/Dockerfile",
                     "hadolint/hadolint",
                     "hadolint",
-                    "-f",
-                    "json",
-                    "--no-fail",
                 ]
                 exe.extend(flags)
                 exe.append("Dockerfile")
+                logging.warning(' '.join(exe))
                 output = subprocess.check_output(
                     exe, stderr=subprocess.STDOUT, universal_newlines=True
                 )
