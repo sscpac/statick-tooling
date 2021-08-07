@@ -3,6 +3,7 @@
 import argparse
 import os
 import subprocess
+import sys
 
 import mock
 import pytest
