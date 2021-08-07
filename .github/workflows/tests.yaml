@@ -99,7 +99,9 @@ jobs:
 
       - name: Tox
         run: |
-          eval "$(docker-machine env default)"
+          if [ "$RUNNER_OS" != "Windows" ]; then
+            eval "$(docker-machine env default)"
+          fi
           python -m tox
 
       - name: Upload coverage to Codecov
