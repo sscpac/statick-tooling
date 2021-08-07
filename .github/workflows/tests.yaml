@@ -73,14 +73,20 @@ jobs:
           sudo npm install -g dockerfile_lint
           rm nodesource_setup.sh
 
-      # Install hadolint directly from github.
-      - name: Install Hadolint
+      - name: Install Hadolint binary (github)
         run: |
           curl -sL -o hadolint https://github.com/hadolint/hadolint/releases/download/v2.6.0/hadolint-$(uname -s)-$(uname -m)
           chmod 700 hadolint
 
-      - name: Install Hadolint (docker)
-        if: matrix.os != 'macos-latest'
+      - name: Install Docker on MacOS
+        if: matrix.os == 'macos-latest'
+        run: |
+          mkdir -p ~/.docker/machine/cache
+          curl -Lo ~/.docker/machine/cache/boot2docker.iso https://github.com/boot2docker/boot2docker/releases/download/v19.03.12/boot2docker.iso
+          brew install docker docker-machine
+
+      - name: Install Hadolint docker image
+        if: matrix.os != 'windows-latest'
         run: |
           docker pull hadolint/hadolint:latest
 
