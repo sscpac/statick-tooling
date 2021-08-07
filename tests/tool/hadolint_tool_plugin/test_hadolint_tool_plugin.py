@@ -79,7 +79,7 @@ def test_hadolint_tool_plugin_scan_valid():
     """Integration test: Make sure the hadolint output hasn't changed."""
     plugin = setup_hadolint_tool_plugin()
     if not plugin.command_exists("hadolint"):
-        pytest.skip("Missing hadolint executable.")
+        pytest.skip("Missing hadolint executable, skipping test.")
     package = Package(
         "valid_package", os.path.join(os.path.dirname(__file__), "valid_package")
     )
@@ -94,7 +94,7 @@ def test_hadolint_tool_plugin_scan_valid_with_issues():
     """Integration test: Make sure the hadolint output hasn't changed."""
     plugin = setup_hadolint_tool_plugin()
     if not plugin.command_exists("hadolint"):
-        pytest.skip("Missing hadolint executable.")
+        pytest.skip("Missing hadolint executable, skipping test.")
     package = Package(
         "valid_package", os.path.join(os.path.dirname(__file__), "valid_package")
     )
@@ -110,7 +110,9 @@ def test_hadolint_tool_plugin_scan_valid_with_issues_with_docker():
     """Integration test: Make sure the hadolint output hasn't changed."""
     plugin = setup_hadolint_tool_plugin(use_docker=True)
     if not plugin.command_exists("docker"):
-        pytest.skip("Missing docker executable.")
+        pytest.skip("Missing docker executable, skipping test.")
+    if sys.platform == "win32":
+        pytest.skip("Docker only supports windows containers on windows, skipping test.")
     package = Package(
         "valid_package", os.path.join(os.path.dirname(__file__), "valid_package")
     )
