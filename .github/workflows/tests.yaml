@@ -98,10 +98,14 @@ jobs:
           mypy --ignore-missing-imports --strict src/
 
       - name: Tox
+        if: matrix.os != 'windows-latest'
         run: |
-          if [ "$RUNNER_OS" != "Windows" ]; then
-            eval "$(docker-machine env default)"
-          fi
+          eval "$(docker-machine env default)"
+          python -m tox
+
+      - name: Tox
+        if: matrix.os == 'windows-latest'
+        run: |
           python -m tox
 
       - name: Upload coverage to Codecov
