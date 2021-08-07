@@ -78,19 +78,9 @@ jobs:
           curl -sL -o hadolint https://github.com/hadolint/hadolint/releases/download/v2.6.0/hadolint-$(uname -s)-$(uname -m)
           chmod 700 hadolint
 
-      - name: Install Docker on MacOS
-        if: matrix.os == 'macos-latest'
+      - name: Install Hadolint docker image (Linux)
+        if: matrix.os == 'ubuntu-18.04' || matrix.os == 'ubuntu-20.04'
         run: |
-          mkdir -p ~/.docker/machine/cache
-          curl -Lo ~/.docker/machine/cache/boot2docker.iso https://github.com/boot2docker/boot2docker/releases/download/v19.03.12/boot2docker.iso
-          brew install docker docker-machine
-          docker-machine create --driver virtualbox default
-          docker-machine env default
-
-      - name: Install Hadolint docker image
-        if: matrix.os != 'windows-latest'
-        run: |
-          eval "$(docker-machine env default)"
           docker pull hadolint/hadolint:latest
 
       - name: Mypy
@@ -98,13 +88,6 @@ jobs:
           mypy --ignore-missing-imports --strict src/
 
       - name: Tox
-        if: matrix.os != 'windows-latest'
-        run: |
-          eval "$(docker-machine env default)"
-          python -m tox
-
-      - name: Tox
-        if: matrix.os == 'windows-latest'
         run: |
           python -m tox
 
