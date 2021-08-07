@@ -74,10 +74,8 @@ jobs:
           rm nodesource_setup.sh
 
       # Install hadolint directly from github.
-      - name: Install Hadolint (Linux)
-        if: matrix.os == 'ubuntu-18.04' || matrix.os == 'ubuntu-20.04'
+      - name: Install Hadolint
         run: |
-          sudo apt install curl
           curl -sL -o hadolint https://github.com/hadolint/hadolint/releases/download/v2.6.0/hadolint-$(uname -s)-$(uname -m)
           chmod 700 hadolint
           docker pull hadolint/hadolint:latest
