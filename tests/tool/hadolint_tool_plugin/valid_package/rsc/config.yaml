@@ -4,4 +4,3 @@ levels:
       hadolint:
         flags: ""
         config: ".hadolint.yaml"
-        hadolint-bin: "/home/axydes/axydes_util/bin/hadolint-bin/v2.6.0/hadolint-Linux-x86_64"

@@ -104,8 +104,12 @@ def test_hadolint_tool_plugin_scan_valid_with_issues():
         os.path.join(os.path.dirname(__file__), "valid_package", "Dockerfile")
     ]
     issues = plugin.scan(package, "level")
-    # We expect a 2 issues: DL3020 use COPY instead of ADD, DL3007 using latest is prone to errors
-    assert len(issues) == 2
+    # We expect 4 issues:
+    # DL3048 style: Invalid label key.
+    # DL3059 info: Multiple consecutive `RUN` instructions. Consider consolidation.
+    # DL3007 warning: Using latest is prone to errors...
+    # DL3020 error: Use COPY instead of ADD for files and folders
+    assert len(issues) == 4
 
 
 def test_hadolint_tool_plugin_scan_valid_with_issues_with_docker():

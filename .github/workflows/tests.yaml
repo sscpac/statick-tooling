@@ -80,11 +80,11 @@ jobs:
           chmod +x hadolint
           mv hadolint hadolint-bin/.
           ls -l hadolint-bin
+          echo "$GITHUB_WORKSPACE/hadolint-bin" >> $GITHUB_PATH
 
       - name: Install Hadolint docker image (Linux)
         if: matrix.os == 'ubuntu-18.04' || matrix.os == 'ubuntu-20.04'
         run: |
-          echo "$GITHUB_WORKSPACE/hadolint-bin" >> $GITHUB_PATH
           docker pull hadolint/hadolint:latest
 
       - name: Mypy
@@ -93,8 +93,6 @@ jobs:
 
       - name: Tox
         run: |
-          echo "$GITHUB_PATH"
-          ls -l hadolint-bin
           python -m tox
 
       - name: Upload coverage to Codecov
