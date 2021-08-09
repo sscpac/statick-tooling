@@ -80,7 +80,6 @@ def test_hadolint_tool_plugin_scan_valid():
     """Integration test: Make sure the hadolint output hasn't changed."""
     plugin = setup_hadolint_tool_plugin()
     if not plugin.command_exists("hadolint"):
-        print(plugin.command_exists("hadolint"))
         pytest.skip("Missing hadolint executable, skipping test.")
     package = Package(
         "valid_package", os.path.join(os.path.dirname(__file__), "valid_package")
