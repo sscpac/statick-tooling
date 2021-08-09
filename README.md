@@ -2,7 +2,7 @@
 
 ![Unit Tests](https://github.com/sscpac/statick-tooling/workflows/Unit%20Tests/badge.svg)
 [![PyPI version](https://badge.fury.io/py/statick-tooling.svg)](https://badge.fury.io/py/statick-tooling)
-[![codecov](https://codecov.io/gh/sscpac/statick-tooling/branch/main/graph/badge.svg?token=MEHL07QKYN)](https://codecov.io/gh/sscpac/statick-tooling)
+[![Codecov](https://codecov.io/gh/sscpac/statick-tooling/branch/main/graph/badge.svg?token=MEHL07QKYN)](https://codecov.io/gh/sscpac/statick-tooling)
 ![Python Versions](https://img.shields.io/pypi/pyversions/statick-tooling.svg)
 ![License](https://img.shields.io/pypi/l/statick-tooling.svg)
 [![Checked with mypy](http://www.mypy-lang.org/static/mypy_badge.svg)](http://mypy-lang.org/)
