@@ -77,13 +77,14 @@ jobs:
         run: |
           mkdir hadolint-bin
           curl -sL -o hadolint https://github.com/hadolint/hadolint/releases/download/v2.6.0/hadolint-$(uname -s)-$(uname -m)
-          chmod 700 hadolint
+          chmod +x hadolint
           mv hadolint hadolint-bin/.
-          echo "hadolint-bin" >> $GITHUB_PATH
+          ls -l hadolint-bin
 
       - name: Install Hadolint docker image (Linux)
         if: matrix.os == 'ubuntu-18.04' || matrix.os == 'ubuntu-20.04'
         run: |
+          echo "hadolint-bin" >> $GITHUB_PATH
           docker pull hadolint/hadolint:latest
 
       - name: Mypy
