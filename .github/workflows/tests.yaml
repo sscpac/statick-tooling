@@ -75,8 +75,11 @@ jobs:
 
       - name: Install Hadolint binary (github)
         run: |
+          mkdir hadolint-bin
           curl -sL -o hadolint https://github.com/hadolint/hadolint/releases/download/v2.6.0/hadolint-$(uname -s)-$(uname -m)
           chmod 700 hadolint
+          mv hadolint hadolint-bin/.
+          echo "hadolint-bin" >> $GITHUB_PATH
 
       - name: Install Hadolint docker image (Linux)
         if: matrix.os == 'ubuntu-18.04' || matrix.os == 'ubuntu-20.04'
@@ -89,6 +92,7 @@ jobs:
 
       - name: Tox
         run: |
+          echo "$GITHUB_PATH"
           python -m tox
 
       - name: Upload coverage to Codecov
