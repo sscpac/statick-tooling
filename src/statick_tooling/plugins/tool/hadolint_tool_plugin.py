@@ -38,7 +38,7 @@ class HadolintToolPlugin(ToolPlugin):  # type: ignore
         """Run tool and gather output."""
         tool_bin = "hadolint"
 
-        # If the user explicitly specifies a binary, let that override the user_version
+        # If the user explicitly specifies a binary, let that override the default
         if self.plugin_context and self.plugin_context.args.hadolint_bin is not None:
             tool_bin = self.plugin_context.args.hadolint_bin
 
