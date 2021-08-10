@@ -53,8 +53,12 @@ class HadolintToolPlugin(ToolPlugin):  # type: ignore
         flags: List[str] = ["-f", "json", "--no-fail"]
         user_flags = self.get_user_flags(level)
         if "-f" in user_flags:
-            logging.warning("Statick requires hadolint to output in json format, ignoring user provided format: %s", )
             idx = user_flags.index("-f")
+            logging.warning(
+                "Statick requires hadolint to output in json format, "
+                "ignoring user provided format: %s",
+                user_flags[idx + 1],
+            )
             user_flags.pop(idx)
             user_flags.pop(idx)
         flags += user_flags
@@ -127,23 +131,29 @@ class HadolintToolPlugin(ToolPlugin):  # type: ignore
                     "-i",
                 ]
                 if config_file_path is not None and config_file_path:
-                    exe.extend([
+                    exe.extend(
+                        [
+                            "-v",
+                            config_file_path + ":/.config/hadolint.yaml",
+                        ]
+                    )
+                exe.extend(
+                    [
                         "-v",
-                        config_file_path + ":/.config/hadolint.yaml",
-                    ])
-                exe.extend([
-                    "-v",
-                    src + ":/Dockerfile",
-                    "hadolint/hadolint",
-                    "hadolint",
-                ])
+                        src + ":/Dockerfile",
+                        "hadolint/hadolint",
+                        "hadolint",
+                    ]
+                )
                 exe.extend(flags)
                 exe.append("Dockerfile")
                 output = subprocess.check_output(
                     exe, stderr=subprocess.STDOUT, universal_newlines=True
                 )
                 if output:
-                    output = output.replace('"file":"Dockerfile"', '"file":"' + src + '"')
+                    output = output.replace(
+                        '"file":"Dockerfile"', '"file":"' + src + '"'
+                    )
                     try:
                         file_dict = json.loads(output)
                         for issue in file_dict:

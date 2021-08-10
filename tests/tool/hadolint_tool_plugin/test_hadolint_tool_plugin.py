@@ -19,7 +19,9 @@ from statick_tool.resources import Resources
 from statick_tool.tool_plugin import ToolPlugin
 
 
-def setup_hadolint_tool_plugin(binary=None, use_docker=False, package_dir="valid_package"):
+def setup_hadolint_tool_plugin(
+    binary=None, use_docker=False, package_dir="valid_package"
+):
     """Initialize and return an instance of the hadolint plugin."""
     arg_parser = argparse.ArgumentParser()
     arg_parser.add_argument("--hadolint-bin", dest="hadolint_bin")
@@ -140,7 +142,9 @@ def test_hadolint_tool_plugin_scan_valid_with_issues_with_docker():
     if not plugin.command_exists("docker"):
         pytest.skip("Missing docker executable, skipping test.")
     if sys.platform == "win32":
-        pytest.skip("Docker only supports windows containers on windows, skipping test.")
+        pytest.skip(
+            "Docker only supports windows containers on windows, skipping test."
+        )
     package = Package(
         "valid_package", os.path.join(os.path.dirname(__file__), "valid_package")
     )
@@ -162,13 +166,17 @@ def test_hadolint_tool_plugin_scan_docker_no_config():
     if not plugin.command_exists("docker"):
         pytest.skip("Missing docker executable, skipping test.")
     if sys.platform == "win32":
-        pytest.skip("Docker only supports windows containers on windows, skipping test.")
+        pytest.skip(
+            "Docker only supports windows containers on windows, skipping test."
+        )
     package = Package(
         "missing_config", os.path.join(os.path.dirname(__file__), "missing_config")
     )
     package["dockerfile_src"] = [
         os.path.join(os.path.dirname(__file__), "missing_config", "Dockerfile"),
-        os.path.join(os.path.dirname(__file__), "missing_config", "Dockerfile.noissues")
+        os.path.join(
+            os.path.dirname(__file__), "missing_config", "Dockerfile.noissues"
+        ),
     ]
     issues = plugin.scan(package, "level")
     # We expect 4 issues:
@@ -185,13 +193,17 @@ def test_hadolint_tool_plugin_scan_docker_duplicate_format():
     if not plugin.command_exists("docker"):
         pytest.skip("Missing docker executable, skipping test.")
     if sys.platform == "win32":
-        pytest.skip("Docker only supports windows containers on windows, skipping test.")
+        pytest.skip(
+            "Docker only supports windows containers on windows, skipping test."
+        )
     package = Package(
         "duplicate_format", os.path.join(os.path.dirname(__file__), "duplicate_format")
     )
     package["dockerfile_src"] = [
         os.path.join(os.path.dirname(__file__), "duplicate_format", "Dockerfile"),
-        os.path.join(os.path.dirname(__file__), "duplicate_format", "Dockerfile.noissues")
+        os.path.join(
+            os.path.dirname(__file__), "duplicate_format", "Dockerfile.noissues"
+        ),
     ]
     issues = plugin.scan(package, "level")
     assert len(issues) == 4
