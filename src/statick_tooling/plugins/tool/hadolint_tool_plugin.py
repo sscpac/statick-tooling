@@ -52,6 +52,11 @@ class HadolintToolPlugin(ToolPlugin):  # type: ignore
         config_file_path = self.plugin_context.resources.get_file(tool_config)
         flags: List[str] = ["-f", "json", "--no-fail"]
         user_flags = self.get_user_flags(level)
+        if "-f" in user_flags:
+            logging.warning("Statick requires hadolint to output in json format, ignoring user provided format: %s", )
+            idx = user_flags.index("-f")
+            user_flags.pop(idx)
+            user_flags.pop(idx)
         flags += user_flags
 
         files: List[str] = []
@@ -66,7 +71,7 @@ class HadolintToolPlugin(ToolPlugin):  # type: ignore
         ):
             output = self.scan_docker(tool_bin, flags, files, config_file_path)
         else:
-            if config_file_path is not None:
+            if config_file_path is not None and config_file_path:
                 flags += ["-c", config_file_path]
             output = self.scan_local_binary(tool_bin, flags, files)
 
@@ -120,22 +125,32 @@ class HadolintToolPlugin(ToolPlugin):  # type: ignore
                     "run",
                     "--rm",
                     "-i",
-                    "-v",
-                    config_file_path + ":/.config/hadolint.yaml",
+                ]
+                if config_file_path is not None and config_file_path:
+                    exe.extend([
+                        "-v",
+                        config_file_path + ":/.config/hadolint.yaml",
+                    ])
+                exe.extend([
                     "-v",
                     src + ":/Dockerfile",
                     "hadolint/hadolint",
                     "hadolint",
-                ]
+                ])
                 exe.extend(flags)
                 exe.append("Dockerfile")
                 output = subprocess.check_output(
                     exe, stderr=subprocess.STDOUT, universal_newlines=True
                 )
-                output = output.replace('"file":"Dockerfile"', '"file":"' + src + '"')
-                file_dict = json.loads(output)
-                for issue in file_dict:
-                    json_dict.append(issue)
+                if output:
+                    output = output.replace('"file":"Dockerfile"', '"file":"' + src + '"')
+                    try:
+                        file_dict = json.loads(output)
+                        for issue in file_dict:
+                            json_dict.append(issue)
+                    except json.decoder.JSONDecodeError as ex:
+                        logging.error("Failed to decode json from %s, %s", output, ex)
+                        return None
             return json.dumps(json_dict)
 
         except subprocess.CalledProcessError as ex:
