@@ -50,8 +50,7 @@ class HadolintToolPlugin(ToolPlugin):  # type: ignore
             tool_config = user_config
 
         config_file_path = self.plugin_context.resources.get_file(tool_config)
-        flags: List[str] = []
-        flags += ["-f", "json", "--no-fail"]
+        flags: List[str] = ["-f", "json", "--no-fail"]
         user_flags = self.get_user_flags(level)
         flags += user_flags
 
@@ -154,7 +153,7 @@ class HadolintToolPlugin(ToolPlugin):  # type: ignore
 
         # pylint: disable=too-many-nested-blocks
         for output in total_output:
-            for line in output.split("\n"):
+            for line in output.splitlines():
                 if line:
                     try:
                         err_arr = json.loads(line)
