@@ -73,6 +73,19 @@ jobs:
           sudo npm install -g dockerfile_lint
           rm nodesource_setup.sh
 
+      - name: Install Hadolint binary (github)
+        run: |
+          mkdir hadolint-bin
+          curl -sL -o hadolint https://github.com/hadolint/hadolint/releases/download/v2.6.0/hadolint-$(uname -s)-$(uname -m)
+          chmod +x hadolint
+          mv hadolint hadolint-bin/.
+          echo "$GITHUB_WORKSPACE/hadolint-bin" >> $GITHUB_PATH
+
+      - name: Install Hadolint docker image (Linux)
+        if: matrix.os == 'ubuntu-18.04' || matrix.os == 'ubuntu-20.04'
+        run: |
+          docker pull hadolint/hadolint:latest
+
       - name: Mypy
         run: |
           mypy --ignore-missing-imports --strict src/

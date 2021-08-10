@@ -15,6 +15,14 @@ levels:
       dockerfile-lint:
         flags: ""
 
+  hadolint:
+    discovery:
+      dockerfile:
+        flags: ""
+    tool:
+      hadolint:
+        flags: ""
+
   tooling:
     discovery:
       dockerfile:
@@ -23,6 +31,8 @@ levels:
       dockerfilelint:
         flags: ""
       dockerfile-lint:
+        flags: ""
+      hadolint:
         flags: ""
 
   tooling_with_pylint:

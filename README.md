@@ -126,6 +126,7 @@ Tool | About
 :--- | :----
 [dockerfilelint][dockerfilelint] | A rule based 'linter' for Dockerfiles.
 [dockerfile-lint][dockerfile-lint] | A rule based 'linter' for Dockerfiles.
+[hadolint][hadolint] | Dockerfile linter, validate inline bash, written in Haskell.
 
 ## Contributing
 
@@ -168,3 +169,4 @@ black src tests
 [Pep484]: https://www.python.org/dev/peps/pep-0484/
 [dockerfilelint]: https://github.com/replicatedhq/dockerfilelint
 [dockerfile-lint]: https://github.com/projectatomic/dockerfile_lint
+[hadolint]: https://github.com/hadolint/hadolint
