@@ -111,7 +111,6 @@ class DockerfileLintToolPlugin(ToolPlugin):  # type: ignore
                                 )
 
                     except ValueError as ex:
-                        logging.warning("ValueError: %s, line: %s", ex, line)
                         issues.append(
                             Issue(
                                 "EXCEPTION",
