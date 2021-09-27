@@ -19,7 +19,7 @@ from statick_tool.resources import Resources
 from statick_tool.tool_plugin import ToolPlugin
 
 
-def setup_dockerfilelint_tool_plugin():
+def setup_dockerfilelint_tool_plugin(package="valid_package"):
     """Initialize and return an instance of the dockerfilelint plugin."""
     arg_parser = argparse.ArgumentParser()
     arg_parser.add_argument(
@@ -32,7 +32,7 @@ def setup_dockerfilelint_tool_plugin():
     resources = Resources(
         [
             os.path.join(os.path.dirname(statick_tool.__file__), "plugins"),
-            os.path.join(os.path.dirname(__file__), "valid_package"),
+            os.path.join(os.path.dirname(__file__), package),
         ]
     )
     config = Config(resources.get_file("config.yaml"))
@@ -118,6 +118,21 @@ def test_dockerfilelint_tool_plugin_parse_invalid():
     plugin = setup_dockerfilelint_tool_plugin()
     output = "invalid text"
     issues = plugin.parse_output(output)
+    assert not issues
+
+
+def test_dockerfilelint_tool_plugin_scan_invalid_rc_file():
+    """Integration test: Make sure the dockerfilelint output hasn't changed."""
+    plugin = setup_dockerfilelint_tool_plugin(package="invalidrc_package")
+    if not plugin.command_exists("dockerfilelint"):
+        pytest.skip("Missing dockerfilelint executable.")
+    package = Package(
+        "invalidrc_package", os.path.join(os.path.dirname(__file__), "invalidrc_package")
+    )
+    package["dockerfile_src"] = [
+        os.path.join(os.path.dirname(__file__), "invalidrc_package", "Dockerfile")
+    ]
+    issues = plugin.scan(package, "level")
     assert not issues
 
 
