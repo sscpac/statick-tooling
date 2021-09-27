@@ -121,8 +121,6 @@ def test_dockerfilelint_tool_plugin_parse_invalid():
     plugin = setup_dockerfilelint_tool_plugin()
     output = "invalid text"
     issues = plugin.parse_output([output])
-    print(issues)
-    assert len(issues) == 1
     assert len(issues) == 1
     assert issues[0].filename == "EXCEPTION"
     assert issues[0].line_number == "0"
