@@ -116,9 +116,15 @@ def test_dockerfilelint_tool_plugin_parse_valid():
 def test_dockerfilelint_tool_plugin_parse_invalid():
     """Verify that invalid output of dockerfilelint is ignored."""
     plugin = setup_dockerfilelint_tool_plugin()
-    output = "invalid text"
-    issues = plugin.parse_output(output)
-    assert not issues
+    output = "invalid text\n"
+    issues = plugin.parse_output([output])
+    assert len(issues) == 1
+    assert issues[0].filename == "EXCEPTION"
+    assert issues[0].line_number == "0"
+    assert issues[0].tool == "dockerfilelint"
+    assert issues[0].issue_type == "ValueError"
+    assert issues[0].severity == "5"
+    assert issues[0].message == "Expecting value: line 1 column 1 (char 0), on line: invalid text"
 
 
 def test_dockerfilelint_tool_plugin_scan_invalid_rc_file():
@@ -164,7 +170,13 @@ def test_dockerfilelint_tool_plugin_scan_calledprocesserror(
         2, "", output="mocked error"
     )
     issues = plugin.scan(package, "level")
-    assert not issues
+    assert len(issues) == 1
+    assert issues[0].filename == "EXCEPTION"
+    assert issues[0].line_number == "0"
+    assert issues[0].tool == "dockerfilelint"
+    assert issues[0].issue_type == "ValueError"
+    assert issues[0].severity == "5"
+    assert issues[0].message == "Expecting value: line 1 column 1 (char 0), on line: mocked error"
 
 
 @mock.patch(
