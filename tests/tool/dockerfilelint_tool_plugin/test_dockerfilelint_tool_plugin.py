@@ -139,7 +139,28 @@ def test_dockerfilelint_tool_plugin_scan_invalid_rc_file():
         os.path.join(os.path.dirname(__file__), "invalidrc_package", "Dockerfile")
     ]
     issues = plugin.scan(package, "level")
-    assert not issues
+    # Expecting 1 issue for each of the following lines:
+    # /usr/local/lib/node_modules/dockerfilelint/lib/messages.js:14
+    # if (name in rules) {
+    #          ^
+    # TypeError: Cannot use 'in' operator to search for 'latest_tag' in null
+    # at Object.build (/usr/local/lib/node_modules/dockerfilelint/lib/messages.js:14:14)
+    # at /usr/local/lib/node_modules/dockerfilelint/lib/index.js:150:31
+    # at Array.forEach (<anonymous>)
+    # at runLine (/usr/local/lib/node_modules/dockerfilelint/lib/index.js:149:37)
+    # at Object.module.exports.run (/usr/local/lib/node_modules/dockerfilelint/lib/index.js:62:18)
+    # at processContent (/usr/local/lib/node_modules/dockerfilelint/bin/dockerfilelint:92:50)
+    # at /usr/local/lib/node_modules/dockerfilelint/bin/dockerfilelint:86:3
+    # at Array.forEach (<anonymous>)
+    # at Object.<anonymous> (/usr/local/lib/node_modules/dockerfilelint/bin/dockerfilelint:65:8)
+    # at Module._compile (internal/modules/cjs/loader.js:1063:30)
+    assert len(issues) == 14
+    assert issues[2].filename == "EXCEPTION"
+    assert issues[2].line_number == "0"
+    assert issues[2].tool == "dockerfilelint"
+    assert issues[2].issue_type == "ValueError"
+    assert issues[2].severity == "5"
+    assert issues[2].message == "Expecting value: line 1 column 14 (char 13), on line:              ^"
 
 
 @mock.patch(
