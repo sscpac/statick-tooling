@@ -26,8 +26,9 @@ class DockerfileDiscoveryPlugin(DiscoveryPlugin):  # type: ignore
         self.find_files(package)
 
         for file_dict in package.files.values():
-            if file_dict["name"].startswith("dockerfile") and \
-               not file_dict["name"].endswith(yaml_extensions):
+            if file_dict["name"].startswith("dockerfile") and not file_dict[
+                "name"
+            ].endswith(yaml_extensions):
                 src_files.append(file_dict["path"])
 
         src_files = list(OrderedDict.fromkeys(src_files))
