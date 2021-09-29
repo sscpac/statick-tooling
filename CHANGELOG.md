@@ -21,8 +21,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ### Fixed
 
-- Changing dockerfilelint rc file to an empty file since dockerfilelint doesn't handle an empty rules list.
-  Adding issues to the statick output if one of the dockerfile linter plugins throws an error while parsing
+- Changing dockerfilelint rc file to an empty file since dockerfilelint doesn't handle an empty rules list. (#11)
+- Adding issues to the statick output if one of the dockerfile linter plugins throws an error while parsing
   the output from its tool. (#11)
 - Adding dockerfile_lint to npm dependency file. (@gregtkogut, #10)
 
