@@ -17,13 +17,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 ### Changed
 
 - Filtering out yaml files from the dockerfile sources since all three dockerfile linters
-  use yaml files as their config files. (#12)
+  use yaml files as their configuration files. (#12)
 
 ### Fixed
 
 - Changing dockerfilelint rc file to an empty file since dockerfilelint doesn't handle an empty rules list.
   Adding issues to the statick output if one of the dockerfile linter plugins throws an error while parsing
-  the output from it's tool. (#11)
+  the output from its tool. (#11)
 - Adding dockerfile_lint to npm dependency file. (@gregtkogut, #10)
 
 ## v0.0.2 - 2021-08-05
