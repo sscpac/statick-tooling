@@ -12,6 +12,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ### Removed
 
+## v0.0.4 - 2022-01-04
+
+### Added
+
+- Add Python 3.10 support. (Thomas Denewiler, @tdenewiler, #18)
+- Switch testing environment from macos-latest to macos-10.15.
+  This is to retain support for Python 3.6. (Thomas Denewiler, @tdenewiler, #16)
+
+### Fixed
+
+- Adding Python 3.10 to setup.py and tox.ini to allow tests to run properly. (#20)
+- Use quotes for version numbers in YAML to avoid truncating trailing zeros. (Thomas Denewiler, @tdenewiler, #18)
+
+### Removed
+
 ## v0.0.3 - 2021-09-29
 
 ### Changed
