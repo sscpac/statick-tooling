@@ -80,7 +80,9 @@ class DockerfileLintToolPlugin(ToolPlugin):  # type: ignore
 
     # pylint: enable=too-many-locals
 
-    def parse_output(self, total_output: List[str]) -> List[Issue]:
+    def parse_output(
+        self, total_output: List[str], package: Optional[Package] = None
+    ) -> List[Issue]:
         """Parse tool output and report issues."""
         issues: List[Issue] = []
 

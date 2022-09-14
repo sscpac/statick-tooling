@@ -172,7 +172,9 @@ class HadolintToolPlugin(ToolPlugin):  # type: ignore
             logging.warning("Couldn't find %s! (%s)", tool_bin, ex)
             return None
 
-    def parse_output(self, total_output: List[str]) -> List[Issue]:
+    def parse_output(
+        self, total_output: List[str], package: Optional[Package] = None
+    ) -> List[Issue]:
         """Parse tool output and report issues."""
         issues: List[Issue] = []
 
