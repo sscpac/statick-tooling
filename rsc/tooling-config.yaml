@@ -36,7 +36,8 @@ levels:
         flags: ""
 
   tooling_with_pylint:
-    inherits_from: "tooling"
+    inherits_from:
+      - "tooling"
     discovery:
       python:
         flags: ""
