@@ -15,18 +15,22 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-latest, ubuntu-18.04, ubuntu-20.04, windows-latest]
-        python-version: ['3.7', '3.8', '3.9', '3.10']
+        os: [macos-latest, ubuntu-20.04, ubuntu-22.04, windows-latest]
+        python-version: ['3.7', '3.8', '3.9', '3.10', '3.11']
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
 
-      - uses: actions/cache@v1
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - uses: actions/cache@v3
         if: startsWith(runner.os, 'Linux')
         with:
           path: ~/.cache/pip
@@ -34,7 +38,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
 
-      - uses: actions/cache@v1
+      - uses: actions/cache@v3
         if: startsWith(runner.os, 'macOS')
         with:
           path: ~/Library/Caches/pip
@@ -42,7 +46,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
 
-      - uses: actions/cache@v1
+      - uses: actions/cache@v3
         if: startsWith(runner.os, 'Windows')
         with:
           path: ~\AppData\Local\pip\Cache
@@ -66,18 +70,11 @@ jobs:
 
       # Have to install newer version from non-apt source due to SSL library compatibility issues.
       - name: Install Node and node-based tools (Linux)
-        if: matrix.os == 'ubuntu-18.04' || matrix.os == 'ubuntu-20.04'
+        if: matrix.os == 'ubuntu-20.04' || matrix.os == 'ubuntu-22.04'
         run: |
-          sudo apt install curl
-          curl -sL https://deb.nodesource.com/setup_14.x -o nodesource_setup.sh
-          sudo bash nodesource_setup.sh
-          sudo apt install nodejs
-          sudo npm install -g n
-          sudo n stable
-          sudo npm install -g markdownlint-cli
-          sudo npm install -g dockerfilelint
-          sudo npm install -g dockerfile_lint
-          rm nodesource_setup.sh
+          npm install -g markdownlint-cli
+          npm install -g dockerfilelint
+          npm install -g dockerfile_lint
 
       - name: Install Hadolint binary (github)
         run: |
@@ -88,7 +85,7 @@ jobs:
           echo "$GITHUB_WORKSPACE/hadolint-bin" >> $GITHUB_PATH
 
       - name: Install Hadolint docker image (Linux)
-        if: matrix.os == 'ubuntu-18.04' || matrix.os == 'ubuntu-20.04'
+        if: matrix.os == 'ubuntu-20.04' || matrix.os == 'ubuntu-22.04'
         run: |
           docker pull hadolint/hadolint:latest
 
@@ -101,17 +98,17 @@ jobs:
           python -m tox
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
         with:
           fail_ci_if_error: false
 
       - name: Statick Documentation
-        if: matrix.os == 'ubuntu-18.04' || matrix.os == 'ubuntu-20.04'
+        if: matrix.os == 'ubuntu-20.04' || matrix.os == 'ubuntu-22.04'
         run: |
           statick . --check --user-paths . --profile documentation.yaml
 
       - name: Self check
-        if: matrix.os == 'ubuntu-18.04' || matrix.os == 'ubuntu-20.04'
+        if: matrix.os == 'ubuntu-20.04' || matrix.os == 'ubuntu-22.04'
         run: |
           mkdir statick-output
           statick . --output-directory statick-output --check --profile self_check.yaml
