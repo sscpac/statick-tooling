@@ -10,14 +10,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 - Process all source files at once with tools that support passing in a list of files, instead of invoking each tool
   per file.
+- Ubuntu 22.04 used in continuous integration workflows.
+- Python 3.11 used in continuous integration workflows.
 
-### Fixed
+### Changed
+
+- Update GitHub Actions to use latest versions.
+
+### Removed
+
+- Ubuntu 18.04 removed from continuous integration workflows.
 
 ## v0.1.1 - 2022-10-11
 
 ### Changed
 
-- Updated tool plugins to match new structure introduced in sscpac/statick#423.
+- Update tool plugins to match new structure introduced in sscpac/statick#423.
 - Update `inherits_from` usage in configuration file to match new list format.
 
 ### Fixed
