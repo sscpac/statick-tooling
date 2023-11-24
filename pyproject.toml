@@ -44,8 +44,8 @@ dockerfilelint = "statick_tool.plugins.tool.dockerfilelint:DockerfileLintToolPlu
 hadolint = "statick_tool.plugins.tool.hadolint:HadolintToolPlugin"
 
 [project.urls]
-"Homepage" = "https://github.com/tdenewiler/statick-tooling"
-"Bug Tracker" = "https://github.com/tdenewiler/statick-tooling/issues"
+"Homepage" = "https://github.com/sscpac/statick-tooling"
+"Bug Tracker" = "https://github.com/sscpac/statick-tooling/issues"
 
 [project.optional-dependencies]
 test = [
