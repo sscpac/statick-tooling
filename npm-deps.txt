@@ -1,2 +1,0 @@
-dockerfilelint
-dockerfile_lint
