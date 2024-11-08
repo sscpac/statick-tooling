@@ -95,7 +95,8 @@ jobs:
 
       - name: Tox
         run: |
-          ls hadolint-bin
+          ls "$GITHUB_WORKSPACE/hadolint-bin"
+          echo "$GITHUB_WORKSPACE/hadolint-bin" >> $GITHUB_PATH
           python -m tox
 
       - name: Upload coverage to Codecov
