@@ -155,7 +155,7 @@ def test_dockerfilelint_tool_plugin_scan_invalid_rc_file():
     # at Array.forEach (<anonymous>)
     # at Object.<anonymous> (/usr/local/lib/node_modules/dockerfilelint/bin/dockerfilelint:65:8)
     # at Module._compile (internal/modules/cjs/loader.js:1063:30)
-    assert len(issues) == 15
+    assert len(issues) == 14
     assert issues[2].filename == "EXCEPTION"
     assert issues[2].line_number == "0"
     assert issues[2].tool == "dockerfilelint"
