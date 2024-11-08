@@ -95,6 +95,7 @@ jobs:
 
       - name: Tox
         run: |
+          hadolint
           python -m tox
 
       - name: Upload coverage to Codecov
