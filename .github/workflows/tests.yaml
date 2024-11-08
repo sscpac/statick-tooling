@@ -95,7 +95,7 @@ jobs:
 
       - name: Tox
         run: |
-          ls "$HOME/.local/bin"
+          ls -lh $HOME/.local/bin
           echo "$HOME/.local/bin" >> $GITHUB_PATH
           python -m tox
 
