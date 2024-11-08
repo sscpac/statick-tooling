@@ -80,8 +80,8 @@ jobs:
         run: |
           mkdir -p $HOME/.local/bin
           echo "$HOME/.local/bin" >> $GITHUB_PATH
-          echo "uname -s " uname -s
-          echo "uname -m " uname -m
+          echo "uname -s " $(uname -s)
+          echo "uname -m " $(uname -m)
           curl -sL -o hadolint https://github.com/hadolint/hadolint/releases/download/v2.6.0/hadolint-$(uname -s)-$(uname -m)
           chmod +x hadolint
           mv hadolint $HOME/.local/bin/
