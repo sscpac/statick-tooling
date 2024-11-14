@@ -76,7 +76,9 @@ jobs:
           npm install -g dockerfilelint
           npm install -g dockerfile_lint
 
+      # Do not install on macos until there is a hadolint release for macos (Darwin on arm64 architecture).
       - name: Install Hadolint binary (github)
+        if: matrix.os == 'ubuntu-20.04' || matrix.os == 'ubuntu-22.04' || matrix.os == 'windows-latest'
         run: |
           mkdir -p $HOME/.local/bin
           echo "$HOME/.local/bin" >> $GITHUB_PATH
@@ -93,9 +95,7 @@ jobs:
         run: |
           mypy --ignore-missing-imports --strict src/
 
-      # Do not run on macos until there is a hadolint release for macos (Darwin on arm64 architecture).
       - name: Tox
-        if: matrix.os == 'ubuntu-20.04' || matrix.os == 'ubuntu-22.04' || matrix.os == 'windows-latest'
         run: |
           python -m tox
 
