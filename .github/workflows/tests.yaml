@@ -44,13 +44,15 @@ jobs:
           npm install -g dockerfilelint
           npm install -g dockerfile_lint
 
+      # Do not install on macos until there is a hadolint release for macos (Darwin on arm64 architecture).
       - name: Install Hadolint binary (github)
+        if: matrix.os == 'ubuntu-20.04' || matrix.os == 'ubuntu-22.04' || matrix.os == 'windows-latest'
         run: |
-          mkdir hadolint-bin
+          mkdir -p $HOME/.local/bin
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
           curl -sL -o hadolint https://github.com/hadolint/hadolint/releases/download/v2.6.0/hadolint-$(uname -s)-$(uname -m)
           chmod +x hadolint
-          mv hadolint hadolint-bin/.
-          echo "$GITHUB_WORKSPACE/hadolint-bin" >> $GITHUB_PATH
+          mv hadolint $HOME/.local/bin/
 
       - name: Install Hadolint docker image (Linux)
         if: matrix.os == 'ubuntu-20.04' || matrix.os == 'ubuntu-22.04' || matrix.os == 'ubuntu-24.04'
