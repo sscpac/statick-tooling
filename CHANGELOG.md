@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ## Unreleased
 
+## v0.2.0 - 2025-01-03
+
 ### Added
 
 - Process all source files at once with tools that support passing in a list of files, instead of invoking each tool
@@ -20,6 +22,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 ### Removed
 
 - Ubuntu 18.04 removed from continuous integration workflows.
+- Removed Python 3.7 support.
 
 ## v0.1.1 - 2022-10-11
 
