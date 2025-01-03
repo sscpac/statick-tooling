@@ -33,9 +33,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install .
-          pip install .[test]
-          pip install .[docs]
+          pip install .[docs,test]
 
       - name: Install Node-based tools (Linux)
         if: matrix.os == 'ubuntu-20.04' || matrix.os == 'ubuntu-22.04' || matrix.os == 'ubuntu-24.04'
