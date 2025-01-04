@@ -17,32 +17,55 @@ Custom exceptions can be applied the same way they are with [Statick exceptions]
 
 ## Table of Contents
 
-* [Installation](#installation)
-* [Usage](#usage)
-* [Existing Plugins](#existing-plugins)
-  * [Discovery Plugins](#discovery-plugins)
-  * [Tool Plugins](#tool-plugins)
-* [Contributing](#contributing)
-  * [Mypy](#mypy)
-  * [Formatting](#formatting)
+- [Statick Tooling Plugins](#statick-tooling-plugins)
+  - [Table of Contents](#table-of-contents)
+  - [Installation](#installation)
+  - [Usage](#usage)
+    - [Pip Install](#pip-install)
+    - [Pip Install and Custom Configuration](#pip-install-and-custom-configuration)
+    - [Source Install and Custom Configuration](#source-install-and-custom-configuration)
+  - [Existing Plugins](#existing-plugins)
+    - [Discovery Plugins](#discovery-plugins)
+    - [Tool Plugins](#tool-plugins)
+  - [Contributing](#contributing)
+    - [Mypy](#mypy)
+    - [Formatting](#formatting)
 
 ## Installation
 
 The recommended method to install these Statick plugins is via pip:
 
 ```shell
-python3 -m pip install statick-tooling
+pip install statick-tooling
 ```
 
 You can also clone the repository and use it locally.
 
 ## Usage
 
-Make sure you install all the dependencies from apt/npm:
+Make sure you install all the dependencies from apt/npm.
+See <https://github.com/nodesource/distributions> for Node/npm installation instructions.
+
+Configure npm to allow a non-root user to install packages.
 
 ```shell
-cat install.txt | xargs sudo apt-get install -y
-cat npm-deps.txt | xargs sudo npm install -g
+npm config set prefix '~/.local/'
+```
+
+Make sure `~/.local/bin` exists.
+Check your `PATH` with `echo $PATH`.
+If `~/.local/bin` is not listed then add it to your `PATH`.
+
+```shell
+mkdir -p ~/.local/bin
+echo 'export PATH="$HOME/.local/bin/:$PATH"' >> ~/.bashrc
+```
+
+Install npm packages.
+
+```shell
+npm install -g dockerfilelint
+npm install -g dockerfile_lint
 ```
 
 ### Pip Install
