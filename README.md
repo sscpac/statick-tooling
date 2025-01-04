@@ -43,11 +43,29 @@ You can also clone the repository and use it locally.
 
 ## Usage
 
-Make sure you install all the dependencies from apt/npm:
+Make sure you install all the dependencies from apt/npm.
+See <https://github.com/nodesource/distributions> for Node/npm installation instructions.
+
+Configure npm to allow a non-root user to install packages.
 
 ```shell
-sudo apt-get install -y npm
-sudo npm install -g dockerfilelint dockerfile_lint
+npm config set prefix '~/.local/'
+```
+
+Make sure `~/.local/bin` exists.
+Check your `PATH` with `echo $PATH`.
+If `~/.local/bin` is not listed then add it to your `PATH`.
+
+```shell
+mkdir -p ~/.local/bin
+echo 'export PATH="$HOME/.local/bin/:$PATH"' >> ~/.bashrc
+```
+
+Install npm packages.
+
+```shell
+npm install -g dockerfilelint
+npm install -g dockerfile_lint
 ```
 
 ### Pip Install
